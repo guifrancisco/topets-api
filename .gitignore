@@ -179,4 +179,4 @@ README.html
 
 .DS_Store
 out/
-src/main/resources/secrets.yml
+src/main/resources/application-local.properties
