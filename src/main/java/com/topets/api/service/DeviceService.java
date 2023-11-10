@@ -28,8 +28,7 @@ public class DeviceService {
             throw new IllegalArgumentException("ID cannot be null or empty");
         }
 
-        Device device = new Device();
-        device.setId(id);
+        Device device = new Device(id);
 
         try {
             deviceRepository.save(device);
