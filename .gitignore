@@ -176,8 +176,7 @@ target
 .gradle
 README.html
 .exercism
-/application-*.properties
-/application-*.yml
 
 .DS_Store
 out/
+src/main/resources/application-local.properties
