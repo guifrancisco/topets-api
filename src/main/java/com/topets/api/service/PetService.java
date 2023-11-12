@@ -22,8 +22,14 @@ public class PetService {
 
     public void registerPet(DataRegisterPet dataRegisterPet) {
         log.info("[PetService.registerPet] - [Service]");
-        Pet pet = new Pet(dataRegisterPet);
 
+        boolean petExists = petRepository.existsByName(dataRegisterPet.name());
+
+        if(petExists){
+            throw new IllegalArgumentException("Pet " + dataRegisterPet.name()+" already exists");
+        }
+
+        Pet pet = new Pet(dataRegisterPet);
         petRepository.save(pet);
     }
 

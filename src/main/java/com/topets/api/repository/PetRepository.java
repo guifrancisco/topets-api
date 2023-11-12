@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface PetRepository extends MongoRepository<Pet, String> {
     Page<Pet> findAllByDeviceId(String deviceId, Pageable pageable);
 
+    Boolean existsByName(String name);
+
 }
