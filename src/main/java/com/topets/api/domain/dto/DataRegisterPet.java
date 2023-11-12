@@ -18,7 +18,7 @@ public record DataRegisterPet(
         @NotBlank
         String species,
         @NotBlank
-        String race,
+        String breed,
         @NotNull
         Sex sex
 
