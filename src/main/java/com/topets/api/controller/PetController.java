@@ -4,16 +4,19 @@ import com.topets.api.domain.dto.DataProfilePet;
 import com.topets.api.domain.dto.DataRegisterPet;
 import com.topets.api.domain.dto.DataUpdatePet;
 import com.topets.api.service.PetService;
+
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.web.bind.annotation.*;
+
 
 @RequestMapping("v1/pet")
 @RestController

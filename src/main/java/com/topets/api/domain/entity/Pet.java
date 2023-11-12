@@ -3,6 +3,7 @@ package com.topets.api.domain.entity;
 import com.topets.api.domain.dto.DataRegisterPet;
 import com.topets.api.domain.dto.DataUpdatePet;
 import com.topets.api.domain.enums.Sex;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Getter
 @ToString
 @Document(collection = "pet")
+@AllArgsConstructor
 public class Pet {
 
     @Indexed(unique = true)
@@ -36,7 +38,6 @@ public class Pet {
 
     }
 
-
     public Pet(DataRegisterPet dataRegisterPet){
 
         this.id = UUID.randomUUID().toString();
@@ -47,7 +48,6 @@ public class Pet {
         this.breed = dataRegisterPet.breed();
         this.sex = dataRegisterPet.sex();
     }
-
 
     public void updateData(DataUpdatePet dataUpdatePet) {
         if (dataUpdatePet.name() != null) {
