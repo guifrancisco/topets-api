@@ -4,6 +4,7 @@ import com.topets.api.domain.dto.DataProfilePet;
 import com.topets.api.domain.dto.DataRegisterPet;
 import com.topets.api.domain.dto.DataUpdatePet;
 import com.topets.api.domain.entity.Pet;
+import com.topets.api.repository.DeviceRepository;
 import com.topets.api.repository.PetRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,14 +17,23 @@ public class PetService {
 
     private final PetRepository petRepository;
 
-    public PetService(PetRepository petRepository) {
+    private final DeviceRepository deviceRepository;
+
+    public PetService(PetRepository petRepository, DeviceRepository deviceRepository) {
         this.petRepository = petRepository;
+        this.deviceRepository = deviceRepository;
     }
 
     public void registerPet(DataRegisterPet dataRegisterPet) {
         log.info("[PetService.registerPet] - [Service]");
 
-        boolean petExists = petRepository.existsByName(dataRegisterPet.name());
+        boolean deviceIdExists = deviceRepository.existsById(dataRegisterPet.deviceId());
+
+        if (!deviceIdExists){
+            throw new IllegalArgumentException("Device not registered");
+        }
+
+        boolean petExists = petRepository.existsByNameAndDeviceId(dataRegisterPet.name(), dataRegisterPet.deviceId());
 
         if(petExists){
             throw new IllegalArgumentException("Pet " + dataRegisterPet.name()+" already exists");
