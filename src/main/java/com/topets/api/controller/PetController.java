@@ -31,7 +31,7 @@ public class PetController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<String> registerPet(@RequestBody @Valid DataRegisterPet dataRegisterPet){
+    public ResponseEntity<String> registerPet(@Valid @RequestBody DataRegisterPet dataRegisterPet){
         log.info("[PetController.registerPet] - [Controller]");
         petService.registerPet(dataRegisterPet);
 
@@ -49,7 +49,7 @@ public class PetController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> updatePet(@PathVariable String id, @RequestBody @Valid DataUpdatePet dataUpdatePet){
+    public ResponseEntity<String> updatePet(@PathVariable String id, @Valid @RequestBody DataUpdatePet dataUpdatePet){
         log.info("[PetController.updatePet] - [Controller]");
         petService.updatePet(id, dataUpdatePet);
 
