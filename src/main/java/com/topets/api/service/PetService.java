@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 @Slf4j
 public class PetService {
@@ -46,7 +48,7 @@ public class PetService {
     public void updatePet(String id, DataUpdatePet dataUpdatePet) {
         log.info("[PetService.updatePet] - [Service]");
         Pet pet = petRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Pet not found"));
+                .orElseThrow(() -> new NoSuchElementException("Pet not found"));
 
         pet.updateData(dataUpdatePet);
 
@@ -56,7 +58,7 @@ public class PetService {
     public void deletePet(String id) {
         log.info("[PetService.deletePet] - [Service]");
         Pet pet = petRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Pet not found"));
+                .orElseThrow(() -> new NoSuchElementException("Pet not found"));
 
         petRepository.delete(pet);
     }
