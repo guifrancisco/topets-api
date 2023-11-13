@@ -6,6 +6,7 @@ import com.topets.api.domain.dto.DataUpdatePet;
 import com.topets.api.domain.entity.Pet;
 import com.topets.api.domain.enums.Sex;
 import com.topets.api.helpers.PetTestHelper;
+import com.topets.api.repository.DeviceRepository;
 import com.topets.api.repository.PetRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +36,9 @@ public class PetServiceTest {
     @Mock
     PetRepository petRepository;
 
+    @Mock
+    DeviceRepository deviceRepository;
+
     @Test
     public void registerPet_ExistingPetName_ThrowsIllegalArgumentException(){
         DataRegisterPet dataRegisterPet =
@@ -47,11 +51,33 @@ public class PetServiceTest {
                         Sex.MALE
                 );
 
+        when(deviceRepository.existsById("789456123")).thenReturn(true);
+
         doThrow(new IllegalArgumentException("Pet " + dataRegisterPet.name()+" already exists"))
-                .when(petRepository).existsByName(dataRegisterPet.name());
+                .when(petRepository).existsByNameAndDeviceId(dataRegisterPet.name(), dataRegisterPet.deviceId());
 
         assertThrows(IllegalArgumentException.class, ()->{
                 petService.registerPet(dataRegisterPet);
+        });
+    }
+
+    @Test
+    public void registerPet_DeviceNotRegistered_ThrowsIllegalArgumentException(){
+        DataRegisterPet dataRegisterPet =
+                new DataRegisterPet(
+                        "Atila",
+                        "789456123",
+                        LocalDate.now(),
+                        "Canine",
+                        "German Shepherd",
+                        Sex.MALE
+                );
+
+        doThrow(new IllegalArgumentException("Device not registered"))
+                .when(deviceRepository).existsById(dataRegisterPet.deviceId());
+
+        assertThrows(IllegalArgumentException.class, ()->{
+            petService.registerPet(dataRegisterPet);
         });
     }
 
@@ -67,9 +93,12 @@ public class PetServiceTest {
                         Sex.MALE
                 );
 
+        when(deviceRepository.existsById("789456123")).thenReturn(true);
+
         petService.registerPet(dataRegisterPet);
 
         verify(petRepository).save(any(Pet.class));
+        verify(petRepository).existsByNameAndDeviceId(any(String.class),any(String.class));
     }
 
     @Test
