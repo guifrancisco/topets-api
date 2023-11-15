@@ -4,11 +4,14 @@ import com.topets.api.domain.dto.DataProfilePet;
 import com.topets.api.domain.dto.DataRegisterPet;
 import com.topets.api.domain.dto.DataUpdatePet;
 import com.topets.api.domain.entity.Pet;
+import com.topets.api.repository.DeviceRepository;
 import com.topets.api.repository.PetRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -16,14 +19,23 @@ public class PetService {
 
     private final PetRepository petRepository;
 
-    public PetService(PetRepository petRepository) {
+    private final DeviceRepository deviceRepository;
+
+    public PetService(PetRepository petRepository, DeviceRepository deviceRepository) {
         this.petRepository = petRepository;
+        this.deviceRepository = deviceRepository;
     }
 
     public void registerPet(DataRegisterPet dataRegisterPet) {
         log.info("[PetService.registerPet] - [Service]");
 
-        boolean petExists = petRepository.existsByName(dataRegisterPet.name());
+        boolean deviceIdExists = deviceRepository.existsById(dataRegisterPet.deviceId());
+
+        if (!deviceIdExists){
+            throw new IllegalArgumentException("Device not registered");
+        }
+
+        boolean petExists = petRepository.existsByNameAndDeviceId(dataRegisterPet.name(), dataRegisterPet.deviceId());
 
         if(petExists){
             throw new IllegalArgumentException("Pet " + dataRegisterPet.name()+" already exists");
@@ -36,7 +48,7 @@ public class PetService {
     public void updatePet(String id, DataUpdatePet dataUpdatePet) {
         log.info("[PetService.updatePet] - [Service]");
         Pet pet = petRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Pet not found"));
+                .orElseThrow(() -> new NoSuchElementException("Pet not found"));
 
         pet.updateData(dataUpdatePet);
 
@@ -46,7 +58,7 @@ public class PetService {
     public void deletePet(String id) {
         log.info("[PetService.deletePet] - [Service]");
         Pet pet = petRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Pet not found"));
+                .orElseThrow(() -> new NoSuchElementException("Pet not found"));
 
         petRepository.delete(pet);
     }
