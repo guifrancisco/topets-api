@@ -119,7 +119,6 @@ class MedicalAppointmentServiceTest {
     @Test
     public void deleteAppointment_ValidData_Success(){
         String validId = "valid_id";
-        MedicalAppointment mockAppointment = Mockito.mock(MedicalAppointment.class);
 
         when(medicalAppointmentRepository.existsById(validId)).thenReturn(true);
 

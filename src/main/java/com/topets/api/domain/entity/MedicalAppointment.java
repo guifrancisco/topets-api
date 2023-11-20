@@ -6,12 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.awt.*;
-import java.util.Objects;
 import java.util.UUID;
 
 @Getter
