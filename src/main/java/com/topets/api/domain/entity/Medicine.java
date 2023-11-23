@@ -12,35 +12,23 @@ import java.util.UUID;
 @Getter
 @ToString
 @Document(collection = "medicine")
-@AllArgsConstructor
-public class Medicine {
-
-    @Indexed(unique = true)
-    private String id;
-
-    private String deviceId;
-
-    private String name;
+public class Medicine extends Activity {
 
     private String description;
 
-    //introducing the dummy constructor
-    public Medicine() {
-    }
-
-    public Medicine(DataRegisterCommonDetails dataRegisterCommonDetails,DataRegisterMedicine dataRegisterMedicine){
+    public Medicine(DataRegisterCommonDetails dataRegisterCommonDetails, DataRegisterMedicine dataRegisterMedicine) {
         this.id = UUID.randomUUID().toString();
-        this.deviceId = dataRegisterCommonDetails.deviceId();
         this.name = dataRegisterCommonDetails.name();
+        this.petId = dataRegisterCommonDetails.petId();
+        this.deviceId = dataRegisterCommonDetails.deviceId();
         this.description = dataRegisterMedicine.description();
-
     }
 
-    public void updateMedicine(DataUpdateMedicine dataUpdateMedicine){
-        if (dataUpdateMedicine.name() != null){
-            this.name = dataUpdateMedicine.name();
+    public void updateMedicine(DataUpdateCommonDetails dataUpdateCommonDetails,DataUpdateMedicine dataUpdateMedicine) {
+        if(dataUpdateCommonDetails.name() != null){
+            this.name = dataUpdateCommonDetails.name();
         }
-        if(dataUpdateMedicine.description() != null){
+        if (dataUpdateMedicine.description() != null) {
             this.description = dataUpdateMedicine.description();
         }
     }

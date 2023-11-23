@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.topets.api.domain.dto.DataProfilePet;
 import com.topets.api.domain.dto.DataRegisterPet;
 import com.topets.api.domain.dto.DataUpdatePet;
-import com.topets.api.domain.enums.Sex;
+import com.topets.api.domain.enums.SexEnum;
 import com.topets.api.helpers.PetTestHelper;
 import com.topets.api.service.PetService;
 
@@ -57,7 +57,7 @@ public class PetControllerTest {
                         LocalDate.now(),
                         "Canine",
                         "German Shepherd",
-                        Sex.MALE
+                        SexEnum.MALE
                 );
 
         String petJson = objectMapper.writeValueAsString(dataRegisterPet);
@@ -80,7 +80,7 @@ public class PetControllerTest {
                         LocalDate.now(),
                         "Canine",
                         "German Shepherd",
-                        Sex.MALE
+                        SexEnum.MALE
                 );
 
         String petJson = objectMapper.writeValueAsString(dataUpdatePet);

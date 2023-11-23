@@ -1,7 +1,7 @@
 package com.topets.api.domain.dto;
 
 import com.topets.api.domain.entity.Pet;
-import com.topets.api.domain.enums.Sex;
+import com.topets.api.domain.enums.SexEnum;
 
 import java.time.LocalDate;
 
@@ -12,7 +12,7 @@ public record DataProfilePet(
         LocalDate dateOfBirth,
         String race,
         String species,
-        Sex sex
+        SexEnum sexEnum
 ) {
     public DataProfilePet(Pet pet){
         this(pet.getId(),
@@ -20,6 +20,6 @@ public record DataProfilePet(
                 pet.getDateOfBirth(),
                 pet.getBreed(),
                 pet.getSpecies(),
-                pet.getSex());
+                pet.getSexEnum());
     }
 }

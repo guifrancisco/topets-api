@@ -2,7 +2,7 @@ package com.topets.api.helpers;
 
 import com.topets.api.domain.dto.DataProfilePet;
 import com.topets.api.domain.entity.Pet;
-import com.topets.api.domain.enums.Sex;
+import com.topets.api.domain.enums.SexEnum;
 
 import java.time.LocalDate;
 
@@ -20,7 +20,7 @@ public class PetTestHelper {
                 LocalDate.now(),
                 "Breed " + i,
                 "Species " + i,
-                Sex.MALE
+                SexEnum.MALE
         )).collect(Collectors.toList());
     }
 
@@ -31,7 +31,7 @@ public class PetTestHelper {
                 LocalDate.now(),
                 "Species " + i,
                 "Breed " + i,
-                Sex.MALE,
+                SexEnum.MALE,
                 UUID.randomUUID().toString()
         )).collect(Collectors.toList());
     }

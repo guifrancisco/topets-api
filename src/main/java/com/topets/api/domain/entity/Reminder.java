@@ -3,12 +3,11 @@ package com.topets.api.domain.entity;
 import com.topets.api.domain.dto.DataRegisterCommonDetails;
 import com.topets.api.domain.dto.DataRegisterReminder;
 import com.topets.api.domain.dto.DataUpdateReminder;
-import com.topets.api.domain.enums.Activity;
-import com.topets.api.domain.enums.Interval;
-import lombok.AllArgsConstructor;
+import com.topets.api.domain.enums.ActivityEnum;
+import com.topets.api.domain.enums.IntervalEnum;
+
 import lombok.Getter;
 import lombok.ToString;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -17,46 +16,34 @@ import java.util.UUID;
 @Getter
 @ToString
 @Document(collection = "reminder")
-@AllArgsConstructor
-public class Reminder {
-
-    @Indexed(unique = true)
-    private String id;
-
-    private String deviceId;
+public class Reminder extends Activity {
 
     private String activityId;
 
-    private Activity activityType;
-
-    private String name;
+    private ActivityEnum activityEnum;
 
     private LocalDateTime dateTime;
 
     private Boolean periodic;
 
-    private Interval interval;
+    private IntervalEnum intervalEnum;
 
     private String description;
 
-    //introducing the dummy constructor
-    public Reminder(){
-    }
-
     public Reminder(String activityId,DataRegisterCommonDetails dataRegisterCommonDetails, DataRegisterReminder dataRegisterReminder){
         this.id = UUID.randomUUID().toString();
-        this.deviceId = dataRegisterCommonDetails.deviceId();
         this.activityId = activityId;
-        this.activityType = dataRegisterReminder.activityType();
         this.name = dataRegisterCommonDetails.name();
+        this.petId = dataRegisterCommonDetails.petId();
+        this.activityEnum = dataRegisterReminder.activityEnumType();
         this.dateTime = dataRegisterReminder.dateTime();
         this.periodic = dataRegisterReminder.periodic();
-        this.interval = dataRegisterReminder.interval();
+        this.intervalEnum = dataRegisterReminder.intervalEnum();
         this.description = dataRegisterReminder.description();
     }
 
     public Reminder(String activityId, DataUpdateReminder dataUpdateReminder){
-        this.id = UUID.randomUUID().toString();
+        super();
         this.activityId = activityId;
         updateReminder(dataUpdateReminder);
     }
@@ -74,12 +61,12 @@ public class Reminder {
             this.periodic = dataUpdateReminder.periodic();
         }
 
-        if(dataUpdateReminder.interval() != null){
-            this.interval = dataUpdateReminder.interval();
+        if(dataUpdateReminder.intervalEnum() != null){
+            this.intervalEnum = dataUpdateReminder.intervalEnum();
         }
 
-        if(dataUpdateReminder.activityType() != null){
-            this.activityType = dataUpdateReminder.activityType();
+        if(dataUpdateReminder.activityEnumType() != null){
+            this.activityEnum = dataUpdateReminder.activityEnumType();
         }
 
         if(dataUpdateReminder.description() != null){

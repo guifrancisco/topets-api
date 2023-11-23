@@ -1,8 +1,9 @@
 package com.topets.api.controller;
 
-import com.topets.api.domain.dto.DataMedicineRegisterDetails;
-import com.topets.api.domain.dto.DataMedicineUpdateDetails;
 import com.topets.api.domain.dto.DataProfileMedicine;
+import com.topets.api.domain.dto.DataRegisterMedicine;
+import com.topets.api.domain.dto.DataRegisterMedicineDetails;
+import com.topets.api.domain.dto.DataUpdateMedicineDetails;
 import com.topets.api.service.MedicineService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("v1/medicine")
@@ -26,7 +26,7 @@ public class MedicineController {
     }
 
     @PostMapping
-    public ResponseEntity<String> registerMedicine(@Valid @RequestBody DataMedicineRegisterDetails data){
+    public ResponseEntity<String> registerMedicine(@Valid @RequestBody DataRegisterMedicineDetails data){
         log.info("[MedicineController.registerMedicine] - [Controller]");
         medicineService.registerMedicine(data);
 
@@ -43,7 +43,7 @@ public class MedicineController {
 
     @PutMapping("/{id}")
     public ResponseEntity<String> updateMedicine(@PathVariable String id,
-                                                 @Valid @RequestBody DataMedicineUpdateDetails data){
+                                                 @Valid @RequestBody DataUpdateMedicineDetails data){
         log.info("[MedicineController.updateMedicine] - [Controller]");
         medicineService.updateMedicine(id, data);
 

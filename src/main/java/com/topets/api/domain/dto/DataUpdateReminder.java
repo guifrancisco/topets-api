@@ -1,7 +1,7 @@
 package com.topets.api.domain.dto;
 
-import com.topets.api.domain.enums.Activity;
-import com.topets.api.domain.enums.Interval;
+import com.topets.api.domain.enums.ActivityEnum;
+import com.topets.api.domain.enums.IntervalEnum;
 
 import java.time.LocalDateTime;
 
@@ -9,9 +9,9 @@ public record DataUpdateReminder(
 
         String name,
         LocalDateTime dateTime,
-        Activity activityType,
+        ActivityEnum activityEnumType,
         Boolean periodic,
-        Interval interval,
+        IntervalEnum intervalEnum,
         String description
 
 ) {

@@ -28,7 +28,7 @@ public class MedicineService {
     }
 
     @Transactional
-    public void registerMedicine(DataMedicineRegisterDetails data){
+    public void registerMedicine(DataRegisterMedicineDetails data){
         log.info("[MedicineService.registerMedicine] - [Service]");
 
         boolean deviceIdExists = deviceRepository.existsById(data.dataRegisterCommonDetails().deviceId());
@@ -41,20 +41,21 @@ public class MedicineService {
                 data.dataRegisterMedicine());
 
         if(data.dataRegisterReminder() != null){
-            reminderService.registerReminder(medicine.getId(),data.dataRegisterCommonDetails(),
+            reminderService.registerReminder(medicine.getId(),
+                    data.dataRegisterCommonDetails(),
                     data.dataRegisterReminder());
         }
 
         medicineRepository.save(medicine);
     }
     @Transactional
-    public void updateMedicine(String id ,DataMedicineUpdateDetails data){
+    public void updateMedicine(String id ,DataUpdateMedicineDetails data){
         log.info("[MedicineService.updateMedicine] - [Service]");
 
         Medicine medicine = medicineRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Medicine not found"));
 
-        medicine.updateMedicine(data.dataUpdateMedicine());
+        medicine.updateMedicine(data.dataUpdateCommonDetails(), data.dataUpdateMedicine());
 
         if(data.dataUpdateReminder() != null){
             reminderService.updateOrCreateReminder(medicine.getId(), data.dataUpdateReminder());
@@ -74,6 +75,7 @@ public class MedicineService {
         medicineRepository.delete(medicine);
     }
 
+    // change find by deviceId to petId
     public Page<DataProfileMedicine> findAllMedicinesDevice(String deviceId, Pageable pageable){
         log.info("[MedicineService.findAllMedicinesDevice] - [Service]");
         Page<Medicine> medicines = medicineRepository.findAllByDeviceId(deviceId, pageable);

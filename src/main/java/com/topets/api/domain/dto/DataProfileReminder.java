@@ -1,7 +1,7 @@
 package com.topets.api.domain.dto;
 
 import com.topets.api.domain.entity.Reminder;
-import com.topets.api.domain.enums.Interval;
+import com.topets.api.domain.enums.IntervalEnum;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +11,7 @@ public record DataProfileReminder(
         String name,
         LocalDateTime dateTime,
         Boolean periodic,
-        Interval interval,
+        IntervalEnum intervalEnum,
         String description
 
 ) {
@@ -21,7 +21,7 @@ public record DataProfileReminder(
                 reminder.getName(),
                 reminder.getDateTime(),
                 reminder.getPeriodic(),
-                reminder.getInterval(),
+                reminder.getIntervalEnum(),
                 reminder.getDescription());
     }
 }

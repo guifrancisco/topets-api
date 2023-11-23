@@ -1,7 +1,7 @@
 package com.topets.api.domain.dto;
 
-import com.topets.api.domain.enums.Activity;
-import com.topets.api.domain.enums.Interval;
+import com.topets.api.domain.enums.ActivityEnum;
+import com.topets.api.domain.enums.IntervalEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -12,11 +12,11 @@ public record DataRegisterReminder(
         @NotNull
         LocalDateTime dateTime,
         @NotBlank
-        Activity activityType,
+        ActivityEnum activityEnumType,
         @NotNull
         Boolean periodic,
         @NotNull
-        Interval interval,
+        IntervalEnum intervalEnum,
         @NotBlank
         String description
 ) {

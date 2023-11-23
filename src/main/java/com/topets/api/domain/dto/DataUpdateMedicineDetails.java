@@ -1,8 +1,11 @@
 package com.topets.api.domain.dto;
 
-public record DataMedicineUpdateDetails(
+public record DataUpdateMedicineDetails(
+
+        DataUpdateCommonDetails dataUpdateCommonDetails,
 
         DataUpdateMedicine dataUpdateMedicine,
+
         DataUpdateReminder dataUpdateReminder
 ) {
 }

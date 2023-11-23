@@ -8,6 +8,8 @@ public record DataRegisterCommonDetails(
         @NotBlank
         String name,
         @NotBlank
-        String deviceId
+        String deviceId,
+        @NotBlank
+        String petId
 ) {
 }

@@ -2,7 +2,7 @@ package com.topets.api.domain.entity;
 
 import com.topets.api.domain.dto.DataRegisterPet;
 import com.topets.api.domain.dto.DataUpdatePet;
-import com.topets.api.domain.enums.Sex;
+import com.topets.api.domain.enums.SexEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -29,13 +29,12 @@ public class Pet {
 
     private String breed;
 
-    private Sex sex;
+    private SexEnum sexEnum;
 
     private String deviceId;
 
     //introducing the dummy constructor
     public Pet(){
-
     }
 
     public Pet(DataRegisterPet dataRegisterPet){
@@ -46,7 +45,7 @@ public class Pet {
         this.dateOfBirth = dataRegisterPet.dateOfBirth();
         this.species = dataRegisterPet.species();
         this.breed = dataRegisterPet.breed();
-        this.sex = dataRegisterPet.sex();
+        this.sexEnum = dataRegisterPet.sexEnum();
     }
 
     public void updateData(DataUpdatePet dataUpdatePet) {
@@ -62,8 +61,8 @@ public class Pet {
         if (dataUpdatePet.breed() != null) {
             this.breed = dataUpdatePet.breed();
         }
-        if (dataUpdatePet.sex() != null) {
-            this.sex = dataUpdatePet.sex();
+        if (dataUpdatePet.sexEnum() != null) {
+            this.sexEnum = dataUpdatePet.sexEnum();
         }
     }
 }

@@ -2,7 +2,7 @@ package com.topets.api.domain.dto;
 
 import java.time.LocalDate;
 
-import com.topets.api.domain.enums.Sex;
+import com.topets.api.domain.enums.SexEnum;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +20,6 @@ public record DataRegisterPet(
         @NotBlank
         String breed,
         @NotNull
-        Sex sex
+        SexEnum sexEnum
 ) {
 }
