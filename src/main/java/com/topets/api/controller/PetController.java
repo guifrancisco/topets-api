@@ -1,5 +1,6 @@
 package com.topets.api.controller;
 
+import com.topets.api.config.exception.UnauthorizedAccessException;
 import com.topets.api.domain.dto.DataProfilePet;
 import com.topets.api.domain.dto.DataRegisterPet;
 import com.topets.api.domain.dto.DataUpdatePet;
@@ -63,5 +64,13 @@ public class PetController {
         Page<DataProfilePet> pets  = petService.findAllPetsDevice(deviceId ,pageable);
 
         return ResponseEntity.ok().body(pets);
+    }
+
+    @GetMapping("/{deviceId}/{petId}")
+    public ResponseEntity<DataProfilePet> findPetByDeviceIdAndPetId(@PathVariable String deviceId, @PathVariable String petId) throws UnauthorizedAccessException {
+        log.info("[PetController.findPetByDeviceIdAndPetId] - [Controller]");
+
+        DataProfilePet pet = petService.findByDeviceIdAndId(deviceId, petId);
+        return ResponseEntity.ok().body(pet);
     }
 }

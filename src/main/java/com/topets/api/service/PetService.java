@@ -1,5 +1,6 @@
 package com.topets.api.service;
 
+import com.topets.api.config.exception.UnauthorizedAccessException;
 import com.topets.api.domain.dto.DataProfilePet;
 import com.topets.api.domain.dto.DataRegisterPet;
 import com.topets.api.domain.dto.DataUpdatePet;
@@ -7,11 +8,13 @@ import com.topets.api.domain.entity.Pet;
 import com.topets.api.repository.DeviceRepository;
 import com.topets.api.repository.PetRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -67,6 +70,14 @@ public class PetService {
         log.info("[PetService.findAllPets] - [Service]");
         Page<Pet> pets = petRepository.findAllByDeviceId(deviceId, pageable);
         return pets.map(DataProfilePet::new);
+    }
+
+    public DataProfilePet findByDeviceIdAndId(String deviceId, String petId) throws UnauthorizedAccessException {
+        log.info("[PetService.findByDeviceIdAndId] - [Service]");
+        Pet pet = petRepository.findById(petId).orElseThrow(() ->  new NoSuchElementException("Pet not found"));
+        if(!Objects.equals(pet.getDeviceId(), deviceId)){throw new UnauthorizedAccessException("Unauthorized Access");}
+
+        return new DataProfilePet(pet);
     }
 }
 
