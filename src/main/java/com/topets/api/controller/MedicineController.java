@@ -33,11 +33,11 @@ public class MedicineController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteMedicine(@PathVariable String id){
+    public ResponseEntity<?> deleteMedicine(@PathVariable String id){
         log.info("[MedicineController.deleteMedicine] - [Controller]");
         medicineService.deleteMedicine(id);
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
@@ -52,9 +52,9 @@ public class MedicineController {
     @GetMapping("/{petId}")
     public ResponseEntity<Page<DataProfileMedicineReminder>> findAllPetMedicines(@PathVariable String petId,
                                                                                  @PageableDefault(size = 10)
-                                                                            Pageable pageable){
+                                                                                 Pageable pageable){
 
-        log.info("[MedicineController.findAllMedicinesDevice] - [Controller]");
+        log.info("[MedicineController.findAllPetMedicines] - [Controller]");
         Page<DataProfileMedicineReminder> medicines = medicineService.findAllMedicines(petId, pageable);
 
         return ResponseEntity.ok().body(medicines);

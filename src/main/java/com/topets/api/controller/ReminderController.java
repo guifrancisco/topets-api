@@ -48,11 +48,11 @@ public class ReminderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String>deleteReminder(@PathVariable String id){
+    public ResponseEntity<?>deleteReminder(@PathVariable String id){
         log.info("[ReminderController.deleteReminder] - [Controller]");
         reminderService.deleteReminder(id);
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
 }
