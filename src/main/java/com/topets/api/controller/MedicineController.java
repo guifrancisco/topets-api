@@ -1,7 +1,6 @@
 package com.topets.api.controller;
 
-import com.topets.api.domain.dto.DataProfileMedicine;
-import com.topets.api.domain.dto.DataRegisterMedicine;
+import com.topets.api.domain.dto.DataProfileMedicineReminder;
 import com.topets.api.domain.dto.DataRegisterMedicineDetails;
 import com.topets.api.domain.dto.DataUpdateMedicineDetails;
 import com.topets.api.service.MedicineService;
@@ -38,7 +37,7 @@ public class MedicineController {
         log.info("[MedicineController.deleteMedicine] - [Controller]");
         medicineService.deleteMedicine(id);
 
-        return new ResponseEntity<>("Medicine deleted successfully", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
@@ -50,13 +49,13 @@ public class MedicineController {
         return new ResponseEntity<>("Medicine updated successfully", HttpStatus.OK);
     }
 
-    @GetMapping("/{deviceId}")
-    public ResponseEntity<Page<DataProfileMedicine>> findAllMedicinesDevice(@PathVariable String deviceId,
-                                                                            @PageableDefault(size = 10)
+    @GetMapping("/{petId}")
+    public ResponseEntity<Page<DataProfileMedicineReminder>> findAllPetMedicines(@PathVariable String petId,
+                                                                                 @PageableDefault(size = 10)
                                                                             Pageable pageable){
 
         log.info("[MedicineController.findAllMedicinesDevice] - [Controller]");
-        Page<DataProfileMedicine> medicines = medicineService.findAllMedicinesDevice(deviceId, pageable);
+        Page<DataProfileMedicineReminder> medicines = medicineService.findAllMedicines(petId, pageable);
 
         return ResponseEntity.ok().body(medicines);
     }

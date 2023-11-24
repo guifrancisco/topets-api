@@ -2,11 +2,13 @@ package com.topets.api.domain.entity;
 
 import com.topets.api.domain.dto.DataRegisterCommonDetails;
 import com.topets.api.domain.dto.DataRegisterReminder;
+import com.topets.api.domain.dto.DataUpdateCommonDetails;
 import com.topets.api.domain.dto.DataUpdateReminder;
 import com.topets.api.domain.enums.ActivityEnum;
 import com.topets.api.domain.enums.IntervalEnum;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -16,6 +18,7 @@ import java.util.UUID;
 @Getter
 @ToString
 @Document(collection = "reminder")
+@NoArgsConstructor
 public class Reminder extends Activity {
 
     private String activityId;
@@ -43,14 +46,17 @@ public class Reminder extends Activity {
     }
 
     public Reminder(String activityId, DataUpdateReminder dataUpdateReminder){
-        super();
+
         this.activityId = activityId;
-        updateReminder(dataUpdateReminder);
+        updateReminder(dataUpdateReminder, null);
     }
 
-    public void updateReminder(DataUpdateReminder dataUpdateReminder){
-        if(dataUpdateReminder.name() != null){
-            this.name = dataUpdateReminder.name();
+    public void updateReminder(DataUpdateReminder dataUpdateReminder, DataUpdateCommonDetails dataUpdateCommonDetails){
+
+        if(dataUpdateCommonDetails!= null) {
+            if (dataUpdateCommonDetails.name() != null){
+                this.name = dataUpdateCommonDetails.name();
+            }
         }
 
         if(dataUpdateReminder.dateTime() != null){

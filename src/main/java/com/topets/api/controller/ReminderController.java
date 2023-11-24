@@ -2,6 +2,7 @@ package com.topets.api.controller;
 
 import com.topets.api.domain.dto.DataProfileReminder;
 import com.topets.api.domain.dto.DataUpdateReminder;
+import com.topets.api.domain.dto.DataUpdateReminderDetails;
 import com.topets.api.service.ReminderService;
 
 import jakarta.validation.Valid;
@@ -29,21 +30,29 @@ public class ReminderController {
     public ResponseEntity<String> updateReminder(@PathVariable String id,
                                                  @Valid @RequestBody DataUpdateReminder dataUpdateReminder){
         log.info("[ReminderController.updateReminder] - [Controller]");
-        reminderService.updateOrCreateReminder(id, dataUpdateReminder);
+        reminderService.updateReminder(id, dataUpdateReminder);
 
         return new ResponseEntity<>("Pet updated successfully", HttpStatus.OK);
     }
 
-    @GetMapping("/{deviceId}")
-    public ResponseEntity<Page<DataProfileReminder>> findAllRemindersDevice(@PathVariable String deviceId,
+    @GetMapping("/{petId}")
+    public ResponseEntity<Page<DataProfileReminder>> findAllRemindersDevice(@PathVariable String petId,
                                                          @PageableDefault(size = 10)
                                                          Pageable pageable){
 
         log.info("[ReminderController.findAllRemindersDevice] - [Controller]");
 
-        Page<DataProfileReminder> reminders= reminderService.findAllRemindersDevice(deviceId, pageable);
+        Page<DataProfileReminder> reminders= reminderService.findAllRemindersDevice(petId, pageable);
 
         return ResponseEntity.ok().body(reminders);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String>deleteReminder(@PathVariable String id){
+        log.info("[ReminderController.deleteReminder] - [Controller]");
+        reminderService.deleteReminder(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

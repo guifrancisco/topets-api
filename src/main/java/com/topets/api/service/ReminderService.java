@@ -1,9 +1,6 @@
 package com.topets.api.service;
 
-import com.topets.api.domain.dto.DataProfileReminder;
-import com.topets.api.domain.dto.DataRegisterCommonDetails;
-import com.topets.api.domain.dto.DataRegisterReminder;
-import com.topets.api.domain.dto.DataUpdateReminder;
+import com.topets.api.domain.dto.*;
 import com.topets.api.domain.entity.Reminder;
 import com.topets.api.repository.ReminderRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +21,8 @@ public class ReminderService {
     }
 
     public void registerReminder(String activityId,
-                                DataRegisterCommonDetails dataRegisterCommonDetails,
-                                DataRegisterReminder dataRegisterReminder){
+                                 DataRegisterCommonDetails dataRegisterCommonDetails,
+                                 DataRegisterReminder dataRegisterReminder) {
         log.info("[ReminderService.reminderService] - [Service]");
 
         Reminder reminder = new Reminder(activityId, dataRegisterCommonDetails, dataRegisterReminder);
@@ -33,30 +30,43 @@ public class ReminderService {
         reminderRepository.save(reminder);
     }
 
-    public void updateOrCreateReminder(String activityId, DataUpdateReminder dataUpdateReminder) {
+    public void updateReminder(String id, DataUpdateReminder dataUpdateReminder) {
         log.info("[ReminderService.updateReminder] - [Service]");
+
+        Reminder reminder = reminderRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Reminder not found"));
+
+        reminder.updateReminder(dataUpdateReminder, null);
+
+        reminderRepository.save(reminder);
+    }
+
+
+    public void updateOrCreateReminder(String activityId, DataUpdateReminder dataUpdateReminder,
+                                       DataUpdateCommonDetails dataUpdateCommonDetails) {
+        log.info("[ReminderService.updateOrCreateReminder] - [Service]");
 
         Reminder reminder = reminderRepository.findByActivityId(activityId)
                 .orElseGet(() -> new Reminder(activityId, dataUpdateReminder));
 
-        if (reminderRepository.existsById(reminder.getId())){
-            reminder.updateReminder(dataUpdateReminder);
+        if (reminderRepository.existsById(reminder.getId())) {
+            reminder.updateReminder(dataUpdateReminder, dataUpdateCommonDetails);
         }
 
         reminderRepository.save(reminder);
     }
 
-    public void deleteReminder(String activityId){
+    public void deleteReminder(String id) {
         log.info("[ReminderService.deleteReminder] - [Service]");
-        Reminder reminder = reminderRepository.findByActivityId(activityId)
+        Reminder reminder = reminderRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Reminder not found"));
 
         reminderRepository.delete(reminder);
     }
 
-    public Page<DataProfileReminder> findAllRemindersDevice(String deviceId, Pageable pageable){
+    public Page<DataProfileReminder> findAllRemindersDevice(String petId, Pageable pageable) {
         log.info("[ReminderService.findAllRemindersDevice] - [Service]");
-        Page<Reminder> reminders = reminderRepository.findAllByDeviceId(deviceId, pageable);
+        Page<Reminder> reminders = reminderRepository.findAllByPetId(petId, pageable);
 
         return reminders.map(DataProfileReminder::new);
     }

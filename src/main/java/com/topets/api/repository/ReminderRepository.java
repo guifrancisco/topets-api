@@ -1,5 +1,6 @@
 package com.topets.api.repository;
 
+import com.topets.api.domain.dto.DataProfileReminder;
 import com.topets.api.domain.entity.Reminder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,9 +13,12 @@ import java.util.Optional;
 @Repository
 public interface ReminderRepository extends MongoRepository<Reminder, String> {
 
-    Page<Reminder> findAllByDeviceId(String deviceId, Pageable pageable);
+    Page<Reminder> findAllByPetId(String petId, Pageable pageable);
 
     Optional<Reminder> findByActivityId(String activityId);
 
+    DataProfileReminder findByActivityIdAndPetId(String activityId, String petId);
 
+    Boolean existsByActivityId(String id);
 }
+

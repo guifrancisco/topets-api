@@ -4,6 +4,8 @@ import com.topets.api.domain.dto.*;
 import com.topets.api.domain.entity.Medicine;
 import com.topets.api.repository.DeviceRepository;
 import com.topets.api.repository.MedicineRepository;
+import com.topets.api.repository.PetRepository;
+import com.topets.api.repository.ReminderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,12 +21,18 @@ public class MedicineService {
 
     private final DeviceRepository deviceRepository;
 
+    private final PetRepository petRepository;
+
+    private final ReminderRepository reminderRepository;
+
     private final ReminderService reminderService;
 
-    public MedicineService(MedicineRepository medicineRepository, DeviceRepository deviceRepository, ReminderService reminderService) {
+    public MedicineService(MedicineRepository medicineRepository, DeviceRepository deviceRepository, ReminderService reminderService, PetRepository petRepository, ReminderRepository reminderRepository) {
         this.medicineRepository = medicineRepository;
         this.deviceRepository = deviceRepository;
         this.reminderService = reminderService;
+        this.petRepository = petRepository;
+        this.reminderRepository = reminderRepository;
     }
 
     @Transactional
@@ -35,6 +43,12 @@ public class MedicineService {
 
         if (!deviceIdExists){
             throw new IllegalArgumentException("Device not registered");
+        }
+
+        boolean petExists = petRepository.existsById(data.dataRegisterCommonDetails().petId());
+
+        if(!petExists){
+            throw new IllegalArgumentException("Pet not registered");
         }
 
         Medicine medicine = new Medicine(data.dataRegisterCommonDetails(),
@@ -58,7 +72,10 @@ public class MedicineService {
         medicine.updateMedicine(data.dataUpdateCommonDetails(), data.dataUpdateMedicine());
 
         if(data.dataUpdateReminder() != null){
-            reminderService.updateOrCreateReminder(medicine.getId(), data.dataUpdateReminder());
+            reminderService.updateOrCreateReminder(
+                    medicine.getId(),
+                    data.dataUpdateReminder(),
+                    data.dataUpdateCommonDetails());
         }
 
         medicineRepository.save(medicine);
@@ -70,16 +87,21 @@ public class MedicineService {
         Medicine medicine = medicineRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Medicine not found"));
 
-        reminderService.deleteReminder(medicine.getId());
+        boolean reminderExists = reminderRepository.existsByActivityId(id);
 
+        if(reminderExists){
+            reminderService.deleteReminder(medicine.getId());
+        }
         medicineRepository.delete(medicine);
     }
 
-    // change find by deviceId to petId
-    public Page<DataProfileMedicine> findAllMedicinesDevice(String deviceId, Pageable pageable){
-        log.info("[MedicineService.findAllMedicinesDevice] - [Service]");
-        Page<Medicine> medicines = medicineRepository.findAllByDeviceId(deviceId, pageable);
-        
-        return medicines.map(DataProfileMedicine::new);
+    public Page<DataProfileMedicineReminder> findAllMedicines(String petId, Pageable pageable){
+        log.info("[MedicineService.findAllMedicinesAndReminders] - [Service]");
+        Page<Medicine> medicines = medicineRepository.findAllByPetId(petId, pageable);
+
+        return medicines.map(medicine -> {
+            DataProfileReminder reminder = reminderRepository.findByActivityIdAndPetId(medicine.getId(), petId);
+            return new DataProfileMedicineReminder(medicine, reminder);
+        });
     }
 }

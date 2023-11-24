@@ -6,6 +6,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface MedicineRepository extends MongoRepository<Medicine, String> {
-
-    Page<Medicine> findAllByDeviceId(String deviceId, Pageable pageable);
+    Page<Medicine> findAllByPetId(String petId, Pageable pageable);
 }

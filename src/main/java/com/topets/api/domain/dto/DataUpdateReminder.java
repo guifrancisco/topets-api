@@ -6,8 +6,6 @@ import com.topets.api.domain.enums.IntervalEnum;
 import java.time.LocalDateTime;
 
 public record DataUpdateReminder(
-
-        String name,
         LocalDateTime dateTime,
         ActivityEnum activityEnumType,
         Boolean periodic,
