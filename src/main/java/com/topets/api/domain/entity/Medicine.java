@@ -3,6 +3,7 @@ package com.topets.api.domain.entity;
 import com.topets.api.domain.dto.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @Getter
 @ToString
 @Document(collection = "medicine")
+@NoArgsConstructor
 public class Medicine extends Activity {
 
     private String description;
