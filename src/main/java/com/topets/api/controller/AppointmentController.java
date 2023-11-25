@@ -2,15 +2,14 @@ package com.topets.api.controller;
 
 import com.topets.api.domain.dto.DataRegisterAppointmentDetails;
 
+import com.topets.api.domain.dto.DataUpdateAppointmentDetails;
+import com.topets.api.domain.dto.DataUpdateNutritionDetails;
 import com.topets.api.service.AppointmentService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("v1/appointment")
 @RestController
@@ -29,6 +28,15 @@ public class AppointmentController {
         appointmentService.registerAppointment(data);
 
         return new ResponseEntity<>("Appointment created successfully", HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateAppointment(@PathVariable String id,
+                                                  @Valid @RequestBody DataUpdateAppointmentDetails data){
+        log.info("[AppointmentController.updateAppointment] - [Controller]");
+        appointmentService.updateAppointment(id, data);
+
+        return new ResponseEntity<>("Appointment updated successfully", HttpStatus.OK);
     }
 
 }
