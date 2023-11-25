@@ -2,7 +2,7 @@ package com.topets.api.service;
 
 import com.topets.api.domain.dto.*;
 import com.topets.api.domain.entity.Medicine;
-import com.topets.api.mapper.MedicineMapper;
+import com.topets.api.mapper.ReminderMapper;
 import com.topets.api.repository.DeviceRepository;
 import com.topets.api.repository.MedicineRepository;
 import com.topets.api.repository.PetRepository;
@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -31,7 +30,7 @@ public class MedicineService {
 
     private final ReminderService reminderService;
 
-    public MedicineService(MedicineRepository medicineRepository, DeviceRepository deviceRepository, ReminderService reminderService, PetRepository petRepository, ReminderRepository reminderRepository, MedicineMapper medicineMapper) {
+    public MedicineService(MedicineRepository medicineRepository, DeviceRepository deviceRepository, ReminderService reminderService, PetRepository petRepository, ReminderRepository reminderRepository, ReminderMapper reminderMapper) {
         this.medicineRepository = medicineRepository;
         this.deviceRepository = deviceRepository;
         this.reminderService = reminderService;
@@ -116,7 +115,7 @@ public class MedicineService {
         }
 
         if (reminderService.existsReminderByActivityId(medicine.getId())) {
-            reminderService.updateReminderByDeviceId(medicine.getId(),
+            reminderService.updateReminderByActivityId(medicine.getId(),
                     data.dataUpdateReminder(), data.dataUpdateCommonDetails());
         } else {
             createNewReminder(medicine, data);
@@ -127,11 +126,11 @@ public class MedicineService {
     private void createNewReminder(Medicine medicine, DataUpdateMedicineDetails data) {
         log.info("[MedicineService.createNewReminder] - [Service]");
         DataRegisterCommonDetails dataRegisterCommonDetails =
-                MedicineMapper.toRegisterCommonDetails(medicine.getName(),
+                ReminderMapper.toRegisterCommonDetails(medicine.getName(),
                         medicine.getDeviceId(), medicine.getPetId());
 
         DataRegisterReminder dataRegisterReminder =
-                MedicineMapper.toDataRegisterReminder(data.dataUpdateReminder());
+                ReminderMapper.toDataRegisterReminder(data.dataUpdateReminder());
 
         reminderService.registerReminder(medicine.getId(), dataRegisterCommonDetails, dataRegisterReminder);
     }
