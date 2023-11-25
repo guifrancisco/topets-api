@@ -39,4 +39,12 @@ public class AppointmentController {
         return new ResponseEntity<>("Appointment updated successfully", HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAppointment(@PathVariable String id){
+        log.info("[AppointmentController.deleteAppointment] - [Controller]");
+        appointmentService.deleteAppointment(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -2,8 +2,6 @@ package com.topets.api.service;
 
 import com.topets.api.domain.dto.*;
 import com.topets.api.domain.entity.Appointment;
-import com.topets.api.domain.entity.Medicine;
-import com.topets.api.domain.entity.Nutrition;
 import com.topets.api.mapper.ReminderMapper;
 import com.topets.api.repository.AppointmentRepository;
 import com.topets.api.repository.DeviceRepository;
@@ -77,6 +75,21 @@ public class AppointmentService {
         handleReminderUpdate(appointment, data);
 
         appointmentRepository.save(appointment);
+    }
+
+    @Transactional
+    public void deleteAppointment(String id){
+        log.info("[AppointmentService.deleteAppointment] - [Service]");
+
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Appointment not found"));
+
+        boolean reminderExists = reminderRepository.existsByActivityId(id);
+
+        if(reminderExists){
+            reminderService.deleteReminderByActivityId(appointment.getId());
+        }
+        appointmentRepository.delete(appointment);
     }
 
     private void handleReminderUpdate(Appointment appointment, DataUpdateAppointmentDetails data) {
