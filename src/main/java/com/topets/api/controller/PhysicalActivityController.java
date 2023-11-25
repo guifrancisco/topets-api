@@ -32,11 +32,20 @@ public class PhysicalActivityController {
     @PutMapping("/{id}")
     public ResponseEntity<String> updatePhysicalActivity(@PathVariable String id,
                                                   @Valid @RequestBody DataUpdatePhysicalActivityDetails data){
-        log.info("[NutritionController.updateNutrition] - [Controller]");
+        log.info("[PhysicalActivityController.updatePhysicalActivity] - [Controller]");
         physicalActivityService.updatePhysicalActivity(id, data);
 
         return new ResponseEntity<>("Physical Activity updated successfully", HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePhysicalActivity(@PathVariable String id){
+        log.info("[NutritionController.deleteMedicine] - [Controller]");
+        nutritionService.deleteNutrition(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
 
 
 
