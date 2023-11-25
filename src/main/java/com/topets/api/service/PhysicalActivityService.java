@@ -77,6 +77,22 @@ public class PhysicalActivityService {
         physicalActivityRepository.save(physicalActivity);
     }
 
+    @Transactional
+    public void deletePhysicalActivity(String id){
+        log.info("[PhysicalActivityService.deletePhysicalActivity] - [Service]");
+
+        PhysicalActivity physicalActivity = physicalActivityRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Physical Activity not found"));
+
+        boolean reminderExists = reminderRepository.existsByActivityId(id);
+
+        if(reminderExists){
+            reminderService.deleteReminderByActivityId(physicalActivity.getId());
+        }
+
+        physicalActivityRepository.delete(physicalActivity);
+    }
+
     private void handleReminderUpdate(PhysicalActivity physicalActivity, DataUpdatePhysicalActivityDetails data) {
         log.info("[PhysicalActivityService.handleReminderUpdate] - [Service]");
         if (data.dataUpdateCommonDetails() != null && data.dataUpdateCommonDetails().deleteReminder()) {

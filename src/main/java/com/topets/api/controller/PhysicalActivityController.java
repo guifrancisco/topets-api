@@ -40,8 +40,8 @@ public class PhysicalActivityController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePhysicalActivity(@PathVariable String id){
-        log.info("[NutritionController.deleteMedicine] - [Controller]");
-        nutritionService.deleteNutrition(id);
+        log.info("[PhysicalActivityController.deletePhysicalActivity] - [Controller]");
+        physicalActivityService.deletePhysicalActivity(id);
 
         return ResponseEntity.noContent().build();
     }
