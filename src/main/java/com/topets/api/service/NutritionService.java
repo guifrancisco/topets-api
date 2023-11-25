@@ -9,6 +9,8 @@ import com.topets.api.repository.PetRepository;
 import com.topets.api.repository.ReminderRepository;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,6 +95,16 @@ public class NutritionService {
         }
 
         nutritionRepository.delete(nutrition);
+    }
+
+    public Page<DataProfileNutritionReminder> findAllNutritionWithReminders(String petId, Pageable pageable){
+        log.info("[NutritionService.findAllNutritionWithReminders] - [Service]");
+        Page<Nutrition> nutritions = nutritionRepository.findAllByPetId(petId, pageable);
+
+        return nutritions.map(nutrition -> {
+            DataProfileReminder reminder = reminderRepository.findByActivityIdAndPetId(nutrition.getId(), petId);
+            return new DataProfileNutritionReminder(nutrition, reminder);
+        });
     }
 
     private void handleReminderUpdate(Nutrition nutrition, DataUpdateNutritionDetails data) {

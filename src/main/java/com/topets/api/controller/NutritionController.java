@@ -1,11 +1,12 @@
 package com.topets.api.controller;
 
-import com.topets.api.domain.dto.DataRegisterNutritionDetails;
-import com.topets.api.domain.dto.DataUpdateMedicineDetails;
-import com.topets.api.domain.dto.DataUpdateNutritionDetails;
+import com.topets.api.domain.dto.*;
 import com.topets.api.service.NutritionService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,4 +46,15 @@ public class NutritionController {
 
         return ResponseEntity.noContent().build();
     }
-}
+
+    @GetMapping("/{petId}")
+    public ResponseEntity<Page<DataProfileNutritionReminder>> findAllNutritionWithReminders(@PathVariable String petId,
+                                                                                            @PageableDefault(size = 10)
+                                                                                            Pageable pageable) {
+        log.info("[NutritionController.findAllNutritionWithReminders] - [Controller]");
+        Page<DataProfileNutritionReminder> nutritions = nutritionService.findAllNutritionWithReminders(petId,pageable);
+
+        return ResponseEntity.ok().body(nutritions);
+        }
+
+    }
