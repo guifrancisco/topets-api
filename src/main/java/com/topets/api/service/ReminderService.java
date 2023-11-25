@@ -25,7 +25,7 @@ public class ReminderService {
     public void registerReminder(String activityId,
                                  DataRegisterCommonDetails dataRegisterCommonDetails,
                                  DataRegisterReminder dataRegisterReminder) {
-        log.info("[ReminderService.reminderService] - [Service]");
+        log.info("[ReminderService.registerReminder] - [Service]");
 
         Reminder reminder = new Reminder(activityId, dataRegisterCommonDetails, dataRegisterReminder);
 

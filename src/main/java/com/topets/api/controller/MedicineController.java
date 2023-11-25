@@ -52,12 +52,12 @@ public class MedicineController {
     }
 
     @GetMapping("/{petId}")
-    public ResponseEntity<Page<DataProfileMedicineReminder>> findAllPetMedicines(@PathVariable String petId,
+    public ResponseEntity<Page<DataProfileMedicineReminder>> findAllMedicinesWithReminders(@PathVariable String petId,
                                                                                  @PageableDefault(size = 10)
                                                                                  Pageable pageable){
 
         log.info("[MedicineController.findAllPetMedicines] - [Controller]");
-        Page<DataProfileMedicineReminder> medicines = medicineService.findAllMedicines(petId, pageable);
+        Page<DataProfileMedicineReminder> medicines = medicineService.findAllMedicinesWithReminders(petId, pageable);
 
         return ResponseEntity.ok().body(medicines);
     }

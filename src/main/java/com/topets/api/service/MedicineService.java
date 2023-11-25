@@ -97,8 +97,8 @@ public class MedicineService {
         medicineRepository.delete(medicine);
     }
 
-    public Page<DataProfileMedicineReminder> findAllMedicines(String petId, Pageable pageable){
-        log.info("[MedicineService.findAllMedicinesAndReminders] - [Service]");
+    public Page<DataProfileMedicineReminder> findAllMedicinesWithReminders(String petId, Pageable pageable){
+        log.info("[MedicineService.findAllMedicinesWithReminders] - [Service]");
         Page<Medicine> medicines = medicineRepository.findAllByPetId(petId, pageable);
 
         return medicines.map(medicine -> {
