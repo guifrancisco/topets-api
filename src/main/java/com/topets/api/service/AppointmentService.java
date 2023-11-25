@@ -2,12 +2,15 @@ package com.topets.api.service;
 
 import com.topets.api.domain.dto.*;
 import com.topets.api.domain.entity.Appointment;
+import com.topets.api.domain.entity.Medicine;
 import com.topets.api.mapper.ReminderMapper;
 import com.topets.api.repository.AppointmentRepository;
 import com.topets.api.repository.DeviceRepository;
 import com.topets.api.repository.PetRepository;
 import com.topets.api.repository.ReminderRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,6 +93,16 @@ public class AppointmentService {
             reminderService.deleteReminderByActivityId(appointment.getId());
         }
         appointmentRepository.delete(appointment);
+    }
+
+    public Page<DataProfileAppointmentReminder> findAllAppointmentsWithReminders(String petId, Pageable pageable){
+        log.info("[AppointmentService.findAllAppointmentsWithReminders] - [Service]");
+        Page<Appointment> appointments = appointmentRepository.findAllByPetId(petId, pageable);
+
+        return appointments.map(appointment -> {
+            DataProfileReminder reminder = reminderRepository.findByActivityIdAndPetId(appointment.getId(), petId);
+            return new DataProfileAppointmentReminder(appointment, reminder);
+        });
     }
 
     private void handleReminderUpdate(Appointment appointment, DataUpdateAppointmentDetails data) {
