@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum ActivityEnum {
     MEDICINE("medicine"),
-    NUTRITION("nutrition");
+    NUTRITION("nutrition"),
+    PHYSICAL_ACTIVITY("physicialActivity");
 
     private final String activity;
 
