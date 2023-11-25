@@ -4,7 +4,7 @@ import com.topets.api.domain.dto.DataProfilePet;
 import com.topets.api.domain.dto.DataRegisterPet;
 import com.topets.api.domain.dto.DataUpdatePet;
 import com.topets.api.domain.entity.Pet;
-import com.topets.api.domain.enums.Sex;
+import com.topets.api.domain.enums.SexEnum;
 import com.topets.api.helpers.PetTestHelper;
 import com.topets.api.repository.DeviceRepository;
 import com.topets.api.repository.PetRepository;
@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -49,7 +48,7 @@ public class PetServiceTest {
                         LocalDate.now(),
                         "Canine",
                         "German Shepherd",
-                        Sex.MALE
+                        SexEnum.MALE
                 );
 
         when(deviceRepository.existsById("789456123")).thenReturn(true);
@@ -71,7 +70,7 @@ public class PetServiceTest {
                         LocalDate.now(),
                         "Canine",
                         "German Shepherd",
-                        Sex.MALE
+                        SexEnum.MALE
                 );
 
         doThrow(new IllegalArgumentException("Device not registered"))
@@ -91,7 +90,7 @@ public class PetServiceTest {
                         LocalDate.now(),
                         "Canine",
                         "German Shepherd",
-                        Sex.MALE
+                        SexEnum.MALE
                 );
 
         when(deviceRepository.existsById("789456123")).thenReturn(true);
@@ -112,7 +111,7 @@ public class PetServiceTest {
                         LocalDate.now(),
                         "Canine",
                         "German Shepherd",
-                        Sex.MALE
+                        SexEnum.MALE
                 );
 
         when(petRepository.findById(id)).thenReturn(Optional.empty());
@@ -132,7 +131,7 @@ public class PetServiceTest {
                         LocalDate.now(),
                         "Canine",
                         "German Shepherd",
-                        Sex.MALE
+                        SexEnum.MALE
                 );
 
         Pet MockPet = Mockito.mock(Pet.class);
