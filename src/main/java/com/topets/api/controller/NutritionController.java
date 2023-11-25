@@ -1,6 +1,8 @@
 package com.topets.api.controller;
 
 import com.topets.api.domain.dto.DataRegisterNutritionDetails;
+import com.topets.api.domain.dto.DataUpdateMedicineDetails;
+import com.topets.api.domain.dto.DataUpdateNutritionDetails;
 import com.topets.api.service.NutritionService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +27,15 @@ public class NutritionController {
         nutritionService.registerNutrition(data);
 
         return new ResponseEntity<>("Nutrition created successfully", HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateNutrition(@PathVariable String id,
+                                                  @Valid @RequestBody DataUpdateNutritionDetails data){
+        log.info("[NutritionController.updateNutrition] - [Controller]");
+        nutritionService.updateNutrition(id, data);
+
+        return new ResponseEntity<>("Medicine updated successfully", HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
