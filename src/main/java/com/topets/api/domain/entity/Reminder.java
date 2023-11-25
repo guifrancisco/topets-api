@@ -45,20 +45,14 @@ public class Reminder extends Activity {
         this.description = dataRegisterReminder.description();
     }
 
-    public Reminder(String activityId, DataUpdateReminder dataUpdateReminder){
-
-        this.activityId = activityId;
-        updateReminder(dataUpdateReminder, null);
-    }
 
     public void updateReminder(DataUpdateReminder dataUpdateReminder, DataUpdateCommonDetails dataUpdateCommonDetails){
 
-        if(dataUpdateCommonDetails!= null) {
+        if(dataUpdateCommonDetails != null){
             if (dataUpdateCommonDetails.name() != null){
                 this.name = dataUpdateCommonDetails.name();
             }
         }
-
         if(dataUpdateReminder.dateTime() != null){
             this.dateTime = dataUpdateReminder.dateTime();
         }

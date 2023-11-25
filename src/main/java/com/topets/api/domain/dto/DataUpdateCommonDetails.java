@@ -1,6 +1,7 @@
 package com.topets.api.domain.dto;
 
 public record DataUpdateCommonDetails(
-        String name
+        String name,
+        Boolean deleteReminder
 ) {
 }

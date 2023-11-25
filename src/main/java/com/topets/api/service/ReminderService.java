@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @Slf4j
@@ -32,8 +33,8 @@ public class ReminderService {
         reminderRepository.save(reminder);
     }
 
-    public void updateReminder(String id, DataUpdateReminder dataUpdateReminder) {
-        log.info("[ReminderService.updateReminder] - [Service]");
+    public void updateReminderById(String id, DataUpdateReminder dataUpdateReminder) {
+        log.info("[ReminderService.updateReminderById] - [Service]");
 
         Reminder reminder = reminderRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Reminder not found"));
@@ -43,24 +44,31 @@ public class ReminderService {
         reminderRepository.save(reminder);
     }
 
+    public void updateReminderByDeviceId(String deviceId,
+                                         DataUpdateReminder dataUpdateReminder,
+                                         DataUpdateCommonDetails dataUpdateCommonDetails){
 
-    public void updateOrCreateReminder(String activityId, DataUpdateReminder dataUpdateReminder,
-                                       DataUpdateCommonDetails dataUpdateCommonDetails) {
-        log.info("[ReminderService.updateOrCreateReminder] - [Service]");
+        log.info("[ReminderService.updateReminderByDeviceId] - [Service]");
 
-        Reminder reminder = reminderRepository.findByActivityId(activityId)
-                .orElseGet(() -> new Reminder(activityId, dataUpdateReminder));
+        Reminder reminder = reminderRepository.findById(deviceId)
+                .orElseThrow(() -> new NoSuchElementException("Reminder not found"));
 
-        if (reminderRepository.existsById(reminder.getId())) {
-            reminder.updateReminder(dataUpdateReminder, dataUpdateCommonDetails);
-        }
+        reminder.updateReminder(dataUpdateReminder, dataUpdateCommonDetails);
 
         reminderRepository.save(reminder);
     }
 
-    public void deleteReminder(String id) {
+    public void deleteReminderById(String id) {
         log.info("[ReminderService.deleteReminder] - [Service]");
         Reminder reminder = reminderRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Reminder not found"));
+
+        reminderRepository.delete(reminder);
+    }
+
+    public void deleteReminderByActivityId(String activityId) {
+        log.info("[ReminderService.deleteReminder] - [Service]");
+        Reminder reminder = reminderRepository.findByActivityId(activityId)
                 .orElseThrow(() -> new NoSuchElementException("Reminder not found"));
 
         reminderRepository.delete(reminder);
@@ -71,5 +79,11 @@ public class ReminderService {
         Page<Reminder> reminders = reminderRepository.findAllByPetId(petId, pageable);
 
         return reminders.map(DataProfileReminder::new);
+    }
+
+    public boolean existsReminderByActivityId(String activityId){
+        log.info("[ReminderService.existsReminderByActivityId] - [Service]");
+
+        return reminderRepository.existsByActivityId(activityId);
     }
 }

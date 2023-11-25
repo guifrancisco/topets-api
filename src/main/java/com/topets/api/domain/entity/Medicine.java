@@ -27,11 +27,15 @@ public class Medicine extends Activity {
     }
 
     public void updateMedicine(DataUpdateCommonDetails dataUpdateCommonDetails,DataUpdateMedicine dataUpdateMedicine) {
-        if(dataUpdateCommonDetails.name() != null){
-            this.name = dataUpdateCommonDetails.name();
+        if(dataUpdateCommonDetails != null){
+            if(dataUpdateCommonDetails.name() != null){
+                this.name = dataUpdateCommonDetails.name();
+            }
         }
-        if (dataUpdateMedicine.description() != null) {
-            this.description = dataUpdateMedicine.description();
+        if (dataUpdateMedicine != null) {
+            if (dataUpdateMedicine.description() != null) {
+                this.description = dataUpdateMedicine.description();
+            }
         }
     }
 }

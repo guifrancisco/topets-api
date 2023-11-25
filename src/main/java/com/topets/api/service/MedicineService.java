@@ -2,6 +2,7 @@ package com.topets.api.service;
 
 import com.topets.api.domain.dto.*;
 import com.topets.api.domain.entity.Medicine;
+import com.topets.api.mapper.MedicineMapper;
 import com.topets.api.repository.DeviceRepository;
 import com.topets.api.repository.MedicineRepository;
 import com.topets.api.repository.PetRepository;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -29,7 +31,7 @@ public class MedicineService {
 
     private final ReminderService reminderService;
 
-    public MedicineService(MedicineRepository medicineRepository, DeviceRepository deviceRepository, ReminderService reminderService, PetRepository petRepository, ReminderRepository reminderRepository) {
+    public MedicineService(MedicineRepository medicineRepository, DeviceRepository deviceRepository, ReminderService reminderService, PetRepository petRepository, ReminderRepository reminderRepository, MedicineMapper medicineMapper) {
         this.medicineRepository = medicineRepository;
         this.deviceRepository = deviceRepository;
         this.reminderService = reminderService;
@@ -73,12 +75,7 @@ public class MedicineService {
 
         medicine.updateMedicine(data.dataUpdateCommonDetails(), data.dataUpdateMedicine());
 
-        if(data.dataUpdateReminder() != null){
-            reminderService.updateOrCreateReminder(
-                    medicine.getId(),
-                    data.dataUpdateReminder(),
-                    data.dataUpdateCommonDetails());
-        }
+        handleReminderUpdate(medicine, data);
 
         medicineRepository.save(medicine);
     }
@@ -92,7 +89,7 @@ public class MedicineService {
         boolean reminderExists = reminderRepository.existsByActivityId(id);
 
         if(reminderExists){
-            reminderService.deleteReminder(medicine.getId());
+            reminderService.deleteReminderByActivityId(medicine.getId());
         }
         medicineRepository.delete(medicine);
     }
@@ -105,5 +102,37 @@ public class MedicineService {
             DataProfileReminder reminder = reminderRepository.findByActivityIdAndPetId(medicine.getId(), petId);
             return new DataProfileMedicineReminder(medicine, reminder);
         });
+    }
+
+    private void handleReminderUpdate(Medicine medicine, DataUpdateMedicineDetails data) {
+        log.info("[MedicineService.handleReminderUpdate] - [Service]");
+        if (data.dataUpdateCommonDetails() != null && data.dataUpdateCommonDetails().deleteReminder()) {
+            reminderService.deleteReminderByActivityId(medicine.getId());
+            return;
+        }
+
+        if (data.dataUpdateReminder() == null) {
+            return;
+        }
+
+        if (reminderService.existsReminderByActivityId(medicine.getId())) {
+            reminderService.updateReminderByDeviceId(medicine.getId(),
+                    data.dataUpdateReminder(), data.dataUpdateCommonDetails());
+        } else {
+            createNewReminder(medicine, data);
+        }
+    }
+
+
+    private void createNewReminder(Medicine medicine, DataUpdateMedicineDetails data) {
+        log.info("[MedicineService.createNewReminder] - [Service]");
+        DataRegisterCommonDetails dataRegisterCommonDetails =
+                MedicineMapper.toRegisterCommonDetails(medicine.getName(),
+                        medicine.getDeviceId(), medicine.getPetId());
+
+        DataRegisterReminder dataRegisterReminder =
+                MedicineMapper.toDataRegisterReminder(data.dataUpdateReminder());
+
+        reminderService.registerReminder(medicine.getId(), dataRegisterCommonDetails, dataRegisterReminder);
     }
 }

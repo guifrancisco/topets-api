@@ -29,7 +29,7 @@ public class ReminderController {
     public ResponseEntity<String> updateReminder(@PathVariable String id,
                                                  @Valid @RequestBody DataUpdateReminder dataUpdateReminder){
         log.info("[ReminderController.updateReminder] - [Controller]");
-        reminderService.updateReminder(id, dataUpdateReminder);
+        reminderService.updateReminderById(id, dataUpdateReminder);
 
         return new ResponseEntity<>("Pet updated successfully", HttpStatus.OK);
     }
@@ -49,7 +49,7 @@ public class ReminderController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?>deleteReminder(@PathVariable String id){
         log.info("[ReminderController.deleteReminder] - [Controller]");
-        reminderService.deleteReminder(id);
+        reminderService.deleteReminderById(id);
 
         return ResponseEntity.noContent().build();
     }
