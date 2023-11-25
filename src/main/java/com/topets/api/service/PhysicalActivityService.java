@@ -8,6 +8,8 @@ import com.topets.api.repository.PetRepository;
 import com.topets.api.repository.PhysicalActivityRepository;
 import com.topets.api.repository.ReminderRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,6 +93,16 @@ public class PhysicalActivityService {
         }
 
         physicalActivityRepository.delete(physicalActivity);
+    }
+
+    public Page<DataProfilePhysicalActivityReminder> findAllPhysicalActivityWithReminders(String petId, Pageable pageable){
+        log.info("[PhysicalActivityService.findAllPhysicalActivityWithReminders] - [Service]");
+        Page<PhysicalActivity> physicalActivities = physicalActivityRepository.findAllByPetId(petId, pageable);
+
+        return physicalActivities.map(physicalActivity -> {
+            DataProfileReminder reminder = reminderRepository.findByActivityIdAndPetId(physicalActivity.getId(), petId);
+            return new DataProfilePhysicalActivityReminder(physicalActivity, reminder);
+        });
     }
 
     private void handleReminderUpdate(PhysicalActivity physicalActivity, DataUpdatePhysicalActivityDetails data) {

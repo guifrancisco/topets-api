@@ -1,11 +1,15 @@
 package com.topets.api.controller;
 
+import com.topets.api.domain.dto.DataProfilePhysicalActivityReminder;
 import com.topets.api.domain.dto.DataRegisterNutritionDetails;
 import com.topets.api.domain.dto.DataRegisterPhysicalActivityDetails;
 import com.topets.api.domain.dto.DataUpdatePhysicalActivityDetails;
 import com.topets.api.service.PhysicalActivityService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +48,17 @@ public class PhysicalActivityController {
         physicalActivityService.deletePhysicalActivity(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{petId}")
+    public ResponseEntity<Page<DataProfilePhysicalActivityReminder>> findAllPhysicalActivityWithReminders(@PathVariable String petId,
+                                                                                                          @PageableDefault(size = 10)
+                                                                                                          Pageable pageable) {
+        log.info("[PhysicalActivityController.findAllPhysicalActivityWithReminders] - [Controller]");
+        Page<DataProfilePhysicalActivityReminder> physicalActivities =
+                physicalActivityService.findAllPhysicalActivityWithReminders(petId,pageable);
+
+        return ResponseEntity.ok().body(physicalActivities);
     }
 
 
