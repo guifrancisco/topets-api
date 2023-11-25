@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+
 @Service
 @Slf4j
 public class NutritionService {
@@ -59,6 +61,22 @@ public class NutritionService {
         }
 
         nutritionRepository.save(nutrition);
+    }
+
+    @Transactional
+    public void deleteNutrition(String id){
+        log.info("[NutritionService.deleteNutrition] - [Service]");
+
+        Nutrition nutrition = nutritionRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Nutrition not found"));
+
+        boolean reminderExists = reminderRepository.existsByActivityId(id);
+
+        if(reminderExists){
+            reminderService.deleteReminderByActivityId(nutrition.getId());
+        }
+
+        nutritionRepository.delete(nutrition);
     }
 
 }

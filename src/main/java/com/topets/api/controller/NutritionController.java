@@ -26,4 +26,12 @@ public class NutritionController {
 
         return new ResponseEntity<>("Nutrition created successfully", HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteNutrition(@PathVariable String id){
+        log.info("[NutritionController.deleteMedicine] - [Controller]");
+        nutritionService.deleteNutrition(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }
