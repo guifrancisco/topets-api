@@ -44,13 +44,13 @@ public class ReminderService {
         reminderRepository.save(reminder);
     }
 
-    public void updateReminderByDeviceId(String deviceId,
+    public void updateReminderByActivityId(String activityId,
                                          DataUpdateReminder dataUpdateReminder,
                                          DataUpdateCommonDetails dataUpdateCommonDetails){
 
         log.info("[ReminderService.updateReminderByDeviceId] - [Service]");
 
-        Reminder reminder = reminderRepository.findById(deviceId)
+        Reminder reminder = reminderRepository.findByActivityId(activityId)
                 .orElseThrow(() -> new NoSuchElementException("Reminder not found"));
 
         reminder.updateReminder(dataUpdateReminder, dataUpdateCommonDetails);
