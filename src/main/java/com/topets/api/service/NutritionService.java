@@ -81,6 +81,30 @@ public class NutritionService {
         nutritionRepository.save(nutrition);
     }
 
+    private void handleReminderUpdate(Nutrition nutrition, DataUpdateNutritionDetails data) {
+        log.info("[NutritionService.handleReminderUpdate] - [Service]");
+        if (data.dataUpdateCommonDetails() != null && data.dataUpdateCommonDetails().deleteReminder()) {
+            reminderService.deleteReminderByActivityId(nutrition.getId());
+            return;
+        }
+
+        if (data.dataUpdateReminder() == null) {
+            return;
+        }
+
+        if (reminderService.existsReminderByActivityId(nutrition.getId())) {
+            reminderService.updateReminderByActivityId(nutrition.getId(),
+                    data.dataUpdateReminder(), data.dataUpdateCommonDetails());
+        } else {
+            reminderService.createNewReminderFromUpdate(
+                    nutrition.getId(),
+                    nutrition.getName(),
+                    nutrition.getDeviceId(),
+                    nutrition.getPetId(),
+                    data.dataUpdateReminder());
+        }
+    }
+
     @Transactional
     public void deleteNutrition(String id){
         log.info("[NutritionService.deleteNutrition] - [Service]");
@@ -105,36 +129,5 @@ public class NutritionService {
             DataProfileReminder reminder = reminderRepository.findByActivityIdAndPetId(nutrition.getId(), petId);
             return new DataProfileNutritionReminder(nutrition, reminder);
         });
-    }
-
-    private void handleReminderUpdate(Nutrition nutrition, DataUpdateNutritionDetails data) {
-        log.info("[NutritionService.handleReminderUpdate] - [Service]");
-        if (data.dataUpdateCommonDetails() != null && data.dataUpdateCommonDetails().deleteReminder()) {
-            reminderService.deleteReminderByActivityId(nutrition.getId());
-            return;
-        }
-
-        if (data.dataUpdateReminder() == null) {
-            return;
-        }
-
-        if (reminderService.existsReminderByActivityId(nutrition.getId())) {
-            reminderService.updateReminderByActivityId(nutrition.getId(),
-                    data.dataUpdateReminder(), data.dataUpdateCommonDetails());
-        } else {
-            createNewReminder(nutrition, data);
-        }
-    }
-
-    private void createNewReminder(Nutrition nutrition, DataUpdateNutritionDetails data) {
-        log.info("[MedicineService.createNewReminder] - [Service]");
-        DataRegisterCommonDetails dataRegisterCommonDetails =
-                ReminderMapper.toRegisterCommonDetails(nutrition.getName(),
-                        nutrition.getDeviceId(), nutrition.getPetId());
-
-        DataRegisterReminder dataRegisterReminder =
-                ReminderMapper.toDataRegisterReminder(data.dataUpdateReminder());
-
-        reminderService.registerReminder(nutrition.getId(), dataRegisterCommonDetails, dataRegisterReminder);
     }
 }

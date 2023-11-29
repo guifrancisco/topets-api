@@ -80,6 +80,30 @@ public class AppointmentService {
         appointmentRepository.save(appointment);
     }
 
+    private void handleReminderUpdate(Appointment appointment, DataUpdateAppointmentDetails data) {
+        log.info("[AppointmentService.handleReminderUpdate] - [Service]");
+        if (data.dataUpdateCommonDetails() != null && data.dataUpdateCommonDetails().deleteReminder()) {
+            reminderService.deleteReminderByActivityId(appointment.getId());
+            return;
+        }
+
+        if (data.dataUpdateReminder() == null) {
+            return;
+        }
+
+        if (reminderService.existsReminderByActivityId(appointment.getId())) {
+            reminderService.updateReminderByActivityId(appointment.getId(),
+                    data.dataUpdateReminder(), data.dataUpdateCommonDetails());
+        } else {
+            reminderService.createNewReminderFromUpdate(
+                    appointment.getId(),
+                    appointment.getName(),
+                    appointment.getDeviceId(),
+                    appointment.getPetId(),
+                    data.dataUpdateReminder());
+        }
+    }
+
     @Transactional
     public void deleteAppointment(String id){
         log.info("[AppointmentService.deleteAppointment] - [Service]");
@@ -104,37 +128,4 @@ public class AppointmentService {
             return new DataProfileAppointmentReminder(appointment, reminder);
         });
     }
-
-    private void handleReminderUpdate(Appointment appointment, DataUpdateAppointmentDetails data) {
-        log.info("[AppointmentService.handleReminderUpdate] - [Service]");
-        if (data.dataUpdateCommonDetails() != null && data.dataUpdateCommonDetails().deleteReminder()) {
-            reminderService.deleteReminderByActivityId(appointment.getId());
-            return;
-        }
-
-        if (data.dataUpdateReminder() == null) {
-            return;
-        }
-
-        if (reminderService.existsReminderByActivityId(appointment.getId())) {
-            reminderService.updateReminderByActivityId(appointment.getId(),
-                    data.dataUpdateReminder(), data.dataUpdateCommonDetails());
-        } else {
-            createNewReminder(appointment, data);
-        }
-    }
-
-    private void createNewReminder(Appointment appointment, DataUpdateAppointmentDetails data) {
-        log.info("[AppointmentService.createNewReminder] - [Service]");
-        DataRegisterCommonDetails dataRegisterCommonDetails =
-                ReminderMapper.toRegisterCommonDetails(appointment.getName(),
-                        appointment.getDeviceId(), appointment.getPetId());
-
-        DataRegisterReminder dataRegisterReminder =
-                ReminderMapper.toDataRegisterReminder(data.dataUpdateReminder());
-
-        reminderService.registerReminder(appointment.getId(), dataRegisterCommonDetails, dataRegisterReminder);
-    }
-
-
 }

@@ -79,6 +79,30 @@ public class PhysicalActivityService {
         physicalActivityRepository.save(physicalActivity);
     }
 
+    private void handleReminderUpdate(PhysicalActivity physicalActivity, DataUpdatePhysicalActivityDetails data) {
+        log.info("[PhysicalActivityService.handleReminderUpdate] - [Service]");
+        if (data.dataUpdateCommonDetails() != null && data.dataUpdateCommonDetails().deleteReminder()) {
+            reminderService.deleteReminderByActivityId(physicalActivity.getId());
+            return;
+        }
+
+        if (data.dataUpdateReminder() == null) {
+            return;
+        }
+
+        if (reminderService.existsReminderByActivityId(physicalActivity.getId())) {
+            reminderService.updateReminderByActivityId(physicalActivity.getId(),
+                    data.dataUpdateReminder(), data.dataUpdateCommonDetails());
+        } else {
+            reminderService.createNewReminderFromUpdate(
+                    physicalActivity.getId(),
+                    physicalActivity.getName(),
+                    physicalActivity.getDeviceId(),
+                    physicalActivity.getPetId(),
+                    data.dataUpdateReminder() );
+        }
+    }
+
     @Transactional
     public void deletePhysicalActivity(String id){
         log.info("[PhysicalActivityService.deletePhysicalActivity] - [Service]");
@@ -104,38 +128,4 @@ public class PhysicalActivityService {
             return new DataProfilePhysicalActivityReminder(physicalActivity, reminder);
         });
     }
-
-    private void handleReminderUpdate(PhysicalActivity physicalActivity, DataUpdatePhysicalActivityDetails data) {
-        log.info("[PhysicalActivityService.handleReminderUpdate] - [Service]");
-        if (data.dataUpdateCommonDetails() != null && data.dataUpdateCommonDetails().deleteReminder()) {
-            reminderService.deleteReminderByActivityId(physicalActivity.getId());
-            return;
-        }
-
-        if (data.dataUpdateReminder() == null) {
-            return;
-        }
-
-        if (reminderService.existsReminderByActivityId(physicalActivity.getId())) {
-            reminderService.updateReminderByActivityId(physicalActivity.getId(),
-                    data.dataUpdateReminder(), data.dataUpdateCommonDetails());
-        } else {
-            createNewReminder(physicalActivity, data);
-        }
-    }
-
-    private void createNewReminder(PhysicalActivity physicalActivity, DataUpdatePhysicalActivityDetails data) {
-        log.info("[PhysicalActivityService.createNewReminder] - [Service]");
-        DataRegisterCommonDetails dataRegisterCommonDetails =
-                ReminderMapper.toRegisterCommonDetails(physicalActivity.getName(),
-                        physicalActivity.getDeviceId(), physicalActivity.getPetId());
-
-        DataRegisterReminder dataRegisterReminder =
-                ReminderMapper.toDataRegisterReminder(data.dataUpdateReminder());
-
-        reminderService.registerReminder(physicalActivity.getId(), dataRegisterCommonDetails, dataRegisterReminder);
-    }
-
-
-
 }
