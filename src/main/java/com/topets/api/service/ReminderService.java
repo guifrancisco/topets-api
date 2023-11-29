@@ -2,6 +2,7 @@ package com.topets.api.service;
 
 import com.topets.api.domain.dto.*;
 import com.topets.api.domain.entity.Reminder;
+import com.topets.api.mapper.ReminderMapper;
 import com.topets.api.repository.ReminderRepository;
 
 import org.springframework.data.domain.Page;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.NoSuchElementException;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @Slf4j
@@ -85,5 +85,20 @@ public class ReminderService {
         log.info("[ReminderService.existsReminderByActivityId] - [Service]");
 
         return reminderRepository.existsByActivityId(activityId);
+    }
+
+    public void createNewReminderFromUpdate(String activityId,String name, String deviceId, String petId,
+                                            DataUpdateReminder dataUpdateReminder){
+        log.info("[ReminderService.createNewReminderFromUpdate] - [Service]");
+        DataRegisterCommonDetails dataRegisterCommonDetails =
+                ReminderMapper.toRegisterCommonDetails(name,
+                        deviceId, petId);
+
+        DataRegisterReminder dataRegisterReminder =
+                ReminderMapper.toDataRegisterReminder(dataUpdateReminder);
+
+        registerReminder(activityId, dataRegisterCommonDetails, dataRegisterReminder);
+
+
     }
 }

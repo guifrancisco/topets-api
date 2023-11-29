@@ -2,17 +2,18 @@ package com.topets.api.service;
 
 import com.topets.api.domain.dto.*;
 import com.topets.api.domain.entity.Appointment;
-import com.topets.api.domain.entity.Medicine;
-import com.topets.api.mapper.ReminderMapper;
+
 import com.topets.api.repository.AppointmentRepository;
 import com.topets.api.repository.DeviceRepository;
 import com.topets.api.repository.PetRepository;
 import com.topets.api.repository.ReminderRepository;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.NoSuchElementException;
 
@@ -80,6 +81,30 @@ public class AppointmentService {
         appointmentRepository.save(appointment);
     }
 
+    private void handleReminderUpdate(Appointment appointment, DataUpdateAppointmentDetails data) {
+        log.info("[AppointmentService.handleReminderUpdate] - [Service]");
+        if (data.dataUpdateCommonDetails() != null && data.dataUpdateCommonDetails().deleteReminder()) {
+            reminderService.deleteReminderByActivityId(appointment.getId());
+            return;
+        }
+
+        if (data.dataUpdateReminder() == null) {
+            return;
+        }
+
+        if (reminderService.existsReminderByActivityId(appointment.getId())) {
+            reminderService.updateReminderByActivityId(appointment.getId(),
+                    data.dataUpdateReminder(), data.dataUpdateCommonDetails());
+        } else {
+            reminderService.createNewReminderFromUpdate(
+                    appointment.getId(),
+                    appointment.getName(),
+                    appointment.getDeviceId(),
+                    appointment.getPetId(),
+                    data.dataUpdateReminder());
+        }
+    }
+
     @Transactional
     public void deleteAppointment(String id){
         log.info("[AppointmentService.deleteAppointment] - [Service]");
@@ -104,37 +129,4 @@ public class AppointmentService {
             return new DataProfileAppointmentReminder(appointment, reminder);
         });
     }
-
-    private void handleReminderUpdate(Appointment appointment, DataUpdateAppointmentDetails data) {
-        log.info("[AppointmentService.handleReminderUpdate] - [Service]");
-        if (data.dataUpdateCommonDetails() != null && data.dataUpdateCommonDetails().deleteReminder()) {
-            reminderService.deleteReminderByActivityId(appointment.getId());
-            return;
-        }
-
-        if (data.dataUpdateReminder() == null) {
-            return;
-        }
-
-        if (reminderService.existsReminderByActivityId(appointment.getId())) {
-            reminderService.updateReminderByActivityId(appointment.getId(),
-                    data.dataUpdateReminder(), data.dataUpdateCommonDetails());
-        } else {
-            createNewReminder(appointment, data);
-        }
-    }
-
-    private void createNewReminder(Appointment appointment, DataUpdateAppointmentDetails data) {
-        log.info("[AppointmentService.createNewReminder] - [Service]");
-        DataRegisterCommonDetails dataRegisterCommonDetails =
-                ReminderMapper.toRegisterCommonDetails(appointment.getName(),
-                        appointment.getDeviceId(), appointment.getPetId());
-
-        DataRegisterReminder dataRegisterReminder =
-                ReminderMapper.toDataRegisterReminder(data.dataUpdateReminder());
-
-        reminderService.registerReminder(appointment.getId(), dataRegisterCommonDetails, dataRegisterReminder);
-    }
-
-
 }

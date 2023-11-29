@@ -2,7 +2,9 @@ package com.topets.api.service;
 
 import com.topets.api.domain.dto.*;
 import com.topets.api.domain.entity.Medicine;
+
 import com.topets.api.mapper.ReminderMapper;
+
 import com.topets.api.repository.DeviceRepository;
 import com.topets.api.repository.MedicineRepository;
 import com.topets.api.repository.PetRepository;
@@ -10,12 +12,14 @@ import com.topets.api.repository.ReminderRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -78,6 +82,31 @@ public class MedicineService {
 
         medicineRepository.save(medicine);
     }
+
+    private void handleReminderUpdate(Medicine medicine, DataUpdateMedicineDetails data) {
+        log.info("[MedicineService.handleReminderUpdate] - [Service]");
+        if (data.dataUpdateCommonDetails() != null && data.dataUpdateCommonDetails().deleteReminder()) {
+            reminderService.deleteReminderByActivityId(medicine.getId());
+            return;
+        }
+
+        if (data.dataUpdateReminder() == null) {
+            return;
+        }
+
+        if (reminderService.existsReminderByActivityId(medicine.getId())) {
+            reminderService.updateReminderByActivityId(medicine.getId(),
+                    data.dataUpdateReminder(), data.dataUpdateCommonDetails());
+        } else {
+            reminderService.createNewReminderFromUpdate(
+                    medicine.getId(),
+                    medicine.getName(),
+                    medicine.getDeviceId(),
+                    medicine.getPetId(),
+                    data.dataUpdateReminder());
+        }
+    }
+
     @Transactional
     public void deleteMedicine(String id){
         log.info("[MedicineService.deleteMedicine] - [Service]");
@@ -103,35 +132,4 @@ public class MedicineService {
         });
     }
 
-    private void handleReminderUpdate(Medicine medicine, DataUpdateMedicineDetails data) {
-        log.info("[MedicineService.handleReminderUpdate] - [Service]");
-        if (data.dataUpdateCommonDetails() != null && data.dataUpdateCommonDetails().deleteReminder()) {
-            reminderService.deleteReminderByActivityId(medicine.getId());
-            return;
-        }
-
-        if (data.dataUpdateReminder() == null) {
-            return;
-        }
-
-        if (reminderService.existsReminderByActivityId(medicine.getId())) {
-            reminderService.updateReminderByActivityId(medicine.getId(),
-                    data.dataUpdateReminder(), data.dataUpdateCommonDetails());
-        } else {
-            createNewReminder(medicine, data);
-        }
-    }
-
-
-    private void createNewReminder(Medicine medicine, DataUpdateMedicineDetails data) {
-        log.info("[MedicineService.createNewReminder] - [Service]");
-        DataRegisterCommonDetails dataRegisterCommonDetails =
-                ReminderMapper.toRegisterCommonDetails(medicine.getName(),
-                        medicine.getDeviceId(), medicine.getPetId());
-
-        DataRegisterReminder dataRegisterReminder =
-                ReminderMapper.toDataRegisterReminder(data.dataUpdateReminder());
-
-        reminderService.registerReminder(medicine.getId(), dataRegisterCommonDetails, dataRegisterReminder);
-    }
 }
