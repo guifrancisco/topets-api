@@ -1,20 +1,25 @@
 package com.topets.api.service;
 
 import com.topets.api.config.exception.UnauthorizedAccessException;
+
 import com.topets.api.domain.dto.DataProfilePet;
 import com.topets.api.domain.dto.DataRegisterPet;
 import com.topets.api.domain.dto.DataUpdatePet;
+
 import com.topets.api.domain.entity.Pet;
+
 import com.topets.api.repository.DeviceRepository;
 import com.topets.api.repository.PetRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.PermissionDeniedDataAccessException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
