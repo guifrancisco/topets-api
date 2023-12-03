@@ -5,6 +5,8 @@ import com.topets.api.domain.entity.Appointment;
 import com.topets.api.domain.entity.Reminder;
 import com.topets.api.domain.enums.ActivityEnum;
 import com.topets.api.domain.enums.IntervalEnum;
+import com.topets.api.helpers.AppointmentTestHelper;
+import com.topets.api.helpers.ReminderTestHelper;
 import com.topets.api.repository.AppointmentRepository;
 import com.topets.api.repository.DeviceRepository;
 import com.topets.api.repository.PetRepository;
@@ -15,14 +17,28 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import static com.topets.api.helpers.AppointmentTestHelper.createDataProfileAppointmentReminders;
 import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -431,4 +447,27 @@ public class AppointmentServiceTest {
         verify(appointmentRepository).delete(mockAppointment);
 
     }
+
+    @Test
+    public void findAllAppointmentsWithReminders_ReturnsPageOfDataProfileAppointmentReminder() {
+        String petId = "1FAGFDHDCVRGds9";
+        Pageable pageable = Pageable.ofSize(10);
+
+        List<Appointment> appointments = AppointmentTestHelper.createAppointments(10);
+
+        Page<Appointment> appointmentPage = new PageImpl<>(appointments, pageable, appointments.size());
+
+        when(appointmentRepository.findAllByPetId(eq(petId), eq(pageable))).thenReturn(appointmentPage);
+        when(reminderRepository.findByActivityIdAndPetId(anyString(), eq(petId)))
+                .thenReturn(ReminderTestHelper.createDataProfileReminder());
+
+        Page<DataProfileAppointmentReminder> result = appointmentService.findAllAppointmentsWithReminders(petId, pageable);
+        assertNotNull(result);
+        assertEquals(appointments.size(), result.getContent().size());
+
+        verify(appointmentRepository).findAllByPetId(petId, pageable);
+        appointments.forEach(appointment ->
+                verify(reminderRepository).findByActivityIdAndPetId(appointment.getId(), petId));
+    }
 }
+

@@ -2,6 +2,9 @@ package com.topets.api.helpers;
 
 import com.topets.api.domain.dto.DataProfileAppointmentReminder;
 import com.topets.api.domain.dto.DataProfileReminder;
+import com.topets.api.domain.dto.DataRegisterAppointment;
+import com.topets.api.domain.dto.DataRegisterCommonDetails;
+import com.topets.api.domain.entity.Appointment;
 import com.topets.api.domain.enums.ActivityEnum;
 import com.topets.api.domain.enums.IntervalEnum;
 
@@ -31,6 +34,23 @@ public class AppointmentTestHelper {
                     "Description " + i,
                     mockReminder
             );
+        }).collect(Collectors.toList());
+    }
+
+    public static List<Appointment> createAppointments(int count) {
+        return IntStream.range(0, count).mapToObj(i -> {
+            DataRegisterCommonDetails commonDetails = new DataRegisterCommonDetails(
+                    "Pet " + i,
+                    UUID.randomUUID().toString(),
+                    UUID.randomUUID().toString()
+            );
+
+            DataRegisterAppointment appointmentDetails = new DataRegisterAppointment(
+                    "Local " + i,
+                    "Description " + i
+            );
+
+            return new Appointment(commonDetails, appointmentDetails);
         }).collect(Collectors.toList());
     }
 }
