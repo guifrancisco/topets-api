@@ -36,7 +36,7 @@ public class NutritionController {
         log.info("[NutritionController.updateNutrition] - [Controller]");
         nutritionService.updateNutrition(id, data);
 
-        return new ResponseEntity<>("Medicine updated successfully", HttpStatus.OK);
+        return new ResponseEntity<>("Nutrition updated successfully", HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
