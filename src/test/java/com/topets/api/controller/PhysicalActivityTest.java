@@ -1,12 +1,15 @@
 package com.topets.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.topets.api.domain.dto.*;
-import com.topets.api.domain.entity.PhysicalActivity;
 import com.topets.api.domain.enums.ActivityEnum;
 import com.topets.api.domain.enums.IntervalEnum;
+
 import com.topets.api.helpers.PhysicalActivityTestHelper;
+
 import com.topets.api.service.PhysicalActivityService;
+
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -133,7 +137,7 @@ public class PhysicalActivityTest {
 
     @Test
     public void findAllPhysicalActivitiesWithReminders_ReturnsPhysicalActivities_Success() throws Exception {
-        String petId = "unique-pet-id";
+        String petId = "AFWR#@484894891#$%@%#@";
 
         Pageable page = PageRequest.of(0, 10);
 
