@@ -76,7 +76,7 @@ public class NutritionService {
         Nutrition nutrition = nutritionRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Nutrition not found"));
 
-        nutrition.updateMedicine(data.dataUpdateCommonDetails(), data.dataUpdateNutrition());
+        nutrition.updateNutrition(data.dataUpdateCommonDetails(), data.dataUpdateNutrition());
 
         handleReminderUpdate(nutrition, data);
 

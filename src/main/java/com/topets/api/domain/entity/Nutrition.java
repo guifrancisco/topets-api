@@ -27,7 +27,7 @@ public class Nutrition extends Activity {
         this.description = dataRegisterNutrition.description();
     }
 
-    public void updateMedicine(DataUpdateCommonDetails dataUpdateCommonDetails,  DataUpdateNutrition dataUpdateNutrition) {
+    public void updateNutrition(DataUpdateCommonDetails dataUpdateCommonDetails,  DataUpdateNutrition dataUpdateNutrition) {
         if(dataUpdateCommonDetails != null){
             if(dataUpdateCommonDetails.name() != null){
                 this.name = dataUpdateCommonDetails.name();
