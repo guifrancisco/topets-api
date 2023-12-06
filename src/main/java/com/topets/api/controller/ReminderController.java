@@ -31,7 +31,7 @@ public class ReminderController {
         log.info("[ReminderController.updateReminder] - [Controller]");
         reminderService.updateReminderById(id, dataUpdateReminder);
 
-        return new ResponseEntity<>("Pet updated successfully", HttpStatus.OK);
+        return new ResponseEntity<>("Reminder updated successfully", HttpStatus.OK);
     }
 
     @GetMapping("/{petId}")
